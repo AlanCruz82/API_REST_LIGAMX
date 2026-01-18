@@ -26,5 +26,5 @@ public class PartidoRequestDTO {
     private Long idTorneo;
 
     @NotEmpty(message = "No puede haber un partido sin equipos")
-    List<DetallePartidoDTO> equipos;
+    List<DetallePartidoDTO> detallesPartido;
 }

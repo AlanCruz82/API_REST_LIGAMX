@@ -25,7 +25,10 @@ public class Partido {
     private int jornada;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime fecha;
+    private LocalDateTime fechaHoraInicio;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime fechaHoraFin;
 
     @ManyToOne
     @JoinColumn(name = "torneo_id")

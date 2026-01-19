@@ -1,6 +1,7 @@
 package com.ligamx.ligamx.mapper;
 
 import com.ligamx.ligamx.dto.DetalleTorneoDTO;
+import com.ligamx.ligamx.entity.DetalleTorneo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -9,6 +10,6 @@ public interface DetalleTorneoMapper {
 
     //Ignoramos el mapeo del idEquipo ya que lo vamos a obtener en el
     //servicio del torneo
-    @Mapping(target = "idEquipo", ignore = true)
-    DetalleTorneoMapper toEntity(DetalleTorneoDTO dto);
+    @Mapping(target = "equipo", ignore = true)
+    DetalleTorneo toEntity(DetalleTorneoDTO dto);
 }

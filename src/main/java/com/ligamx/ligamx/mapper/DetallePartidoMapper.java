@@ -10,6 +10,6 @@ public interface DetallePartidoMapper {
 
     //Ignoramos el mapeo del campo idEquipo ya que lo vamos a obtener del servicio
     //del partido cuando obtengamos el detalle del partido pedido
-    @Mapping(target = "idEquipo", ignore = true)
+    @Mapping(target = "equipo", ignore = true)
     DetallePartido toEntity(DetalleTorneoDTO dto);
 }

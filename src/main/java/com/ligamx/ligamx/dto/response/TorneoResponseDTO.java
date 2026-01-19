@@ -21,5 +21,5 @@ public class TorneoResponseDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private Integer anio;
-    private List<DetalleTorneoDTO> equipos;
+    private List<DetalleTorneoDTO> detallesTorneo;
 }

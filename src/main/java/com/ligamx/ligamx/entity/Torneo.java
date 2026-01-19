@@ -38,5 +38,5 @@ public class Torneo {
     //oprhenRemoval se utiliza en caso de eliminar un equipo se elimine tambien de la bd
     @OneToMany(mappedBy = "torneo", cascade = CascadeType.ALL, orphanRemoval = true)
     //Inicializamos la lista para evitar excepciones de NullPointer
-    private List<DetalleTorneo> equipos = new ArrayList<>();
+    private List<DetalleTorneo> detallesTorneo = new ArrayList<>();
 }

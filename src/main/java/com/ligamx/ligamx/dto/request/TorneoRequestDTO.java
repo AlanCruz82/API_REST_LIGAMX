@@ -32,5 +32,5 @@ public class TorneoRequestDTO {
     private Integer anio;
 
     @NotEmpty(message = "El torneo no puede no tener equipos participando")
-    private List<DetalleTorneoDTO> equipos;
+    private List<DetalleTorneoDTO> detallesTorneo;
 }

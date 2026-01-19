@@ -30,7 +30,7 @@ public class JugadorRequestDTO {
     private LocalDate fechaNacimiento;
 
     @NotBlank(message = "La nacionalidad del jugador no puede estar vacia")
-    private String nacionalidad;
+    private String pais;
 
     @NotNull(message = "La posicion del jugador no puede ser nula")
     private PosicionJugador posicion;

@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 //ComponentModel nos permite indicarle al contenedor de spring que debe generar un bean de esta clase
-@Mapper(componentModel = "Spring")
+@Mapper(componentModel = "spring")
 public interface JugadorMapper {
 
     //Ignoramos el mapeo del campo equipo ya que en la peticion vamos a recibir solamente el id del equipo

@@ -5,7 +5,7 @@ import com.ligamx.ligamx.entity.DetalleTorneo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "Spring")
+@Mapper(componentModel = "spring")
 public interface DetalleTorneoMapper {
 
     //Ignoramos el mapeo del idEquipo ya que lo vamos a obtener en el

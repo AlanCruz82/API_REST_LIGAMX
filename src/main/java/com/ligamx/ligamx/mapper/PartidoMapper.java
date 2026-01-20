@@ -6,7 +6,7 @@ import com.ligamx.ligamx.entity.Partido;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "Spring")
+@Mapper(componentModel = "spring")
 public interface PartidoMapper {
 
     //Ignoramos el mapeo del campo Torneo ya que como peticion esperamos recibir el id

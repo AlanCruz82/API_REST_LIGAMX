@@ -73,26 +73,23 @@ public class JugadorServiceImpl implements JugadorService {
                 () -> new RuntimeException("El equipo con id " + jugador.getIdEquipo() + " no existe")
         );
 
-        //Convertimos el jugador requestDTO a una entidad para poder asignarle su campo de equipo
-        Jugador jugadorGuardar = jugadorMapper.toEntity(jugador);
-
         //Le establecemos su campo de equipo a la entidad del jugador
-        jugadorGuardar.setEquipo(equipo);
+        jugadorPorId.setEquipo(equipo);
 
         //Establecemos las propiedades del jugador guardado por las del nuevo jugador enviado como argumento
         /*La fecha de nacimiento no la establecemos ya que en las configuraciones de la entidad colocamos
         que no debe ser actualizable*/
-        jugadorGuardar.setNombre(jugador.getNombre());
-        jugadorGuardar.setApellidoPaterno(jugador.getApellidoPaterno());
-        jugadorGuardar.setApellidoMaterno(jugador.getApellidoMaterno());
-        jugadorGuardar.setPosicion(jugador.getPosicion());
-        jugadorGuardar.setPais(jugador.getPais());
+        jugadorPorId.setNombre(jugador.getNombre());
+        jugadorPorId.setApellidoPaterno(jugador.getApellidoPaterno());
+        jugadorPorId.setApellidoMaterno(jugador.getApellidoMaterno());
+        jugadorPorId.setPosicion(jugador.getPosicion());
+        jugadorPorId.setPais(jugador.getPais());
 
         //Convertimos el equipo asignado al jugador en un resumen del equipo (id + nombre equipo)
         EquipoResumenDTO resumenEquipo = equipoMapper.toResumenDTO(equipo);
 
         //Almacenamos el jugador con sus propiedades actualizadas a la par que lo convertimos en el responseDTO
-        JugadorResponseDTO jugadorActualizado = jugadorMapper.toResponseDTO(jugadorRepository.save(jugadorGuardar));
+        JugadorResponseDTO jugadorActualizado = jugadorMapper.toResponseDTO(jugadorRepository.save(jugadorPorId));
 
         //Le establecemos el resumen del equipo asignado en la entidad al responseDTO
         jugadorActualizado.setEquipo(resumenEquipo);
@@ -133,36 +130,94 @@ public class JugadorServiceImpl implements JugadorService {
 
     @Override
     public JugadorResponseDTO actualizarPosicionJugador(Long idJugador, PosicionJugador nuevaPosicion) {
-        return null;
+        //Buscamos el jugador con el idJugador pasado como argumento para que en caso de no encontrarlo
+        //manejar ese escenario
+        Jugador jugador = jugadorRepository.findById(idJugador).orElseThrow(
+                () -> new RuntimeException("EL jugador con id " + idJugador + " no existe")
+        );
+
+        //Actualizamos la posicion del jugador almamcenado en la base de datos por la nuevaPosicion enviada como argumento
+        jugador.setPosicion(nuevaPosicion);
+
+        //Gudardamos el jugador con su nueva posicion colcoada a la par que convertimos la entidad almacenada en el
+        //responseDTO y regresamos el dto obtenido
+        return jugadorMapper.toResponseDTO(jugadorRepository.save(jugador));
     }
 
     @Override
     public List<JugadorResponseDTO> listarJugadores() {
-        return List.of();
+        //Obtenemos la lista de los jugadores encontrados y vamos uno por uno convirtiendo su entidad equipo a un resumen
+        //del equipo a la par que lo convertimos en el formato responseDTO
+        return jugadorRepository.findAll().stream().map(jugador -> {
+            //Convertimos la entidad jugador al responseDTO (aun sin su resumen de equipo)
+            JugadorResponseDTO jugadorDTO = jugadorMapper.toResponseDTO(jugador);
+            //Le asignamos su resumen de equipo al jugador con el que estaba relacionado en la entidad
+            jugadorDTO.setEquipo(equipoMapper.toResumenDTO(jugador.getEquipo()));
+            return jugadorDTO;
+        }).toList();
     }
 
     @Override
     public List<JugadorResponseDTO> listarJugadoresPorEquipo(Long idEquipo) {
-        return List.of();
+        //Obtenemos la lista de los jugadores encontrados y vamos uno por uno convirtiendo su entidad equipo a un resumen
+        //del equipo a la par que lo convertimos en el formato responseDTO
+        return jugadorRepository.findByEquipoId(idEquipo).stream().map(jugador -> {
+            //Convertimos la entidad jugador al responseDTO (aun sin su resumen de equipo)
+            JugadorResponseDTO jugadorDTO = jugadorMapper.toResponseDTO(jugador);
+            //Le asignamos su resumen de equipo al jugador con el que estaba relacionado en la entidad
+            jugadorDTO.setEquipo(equipoMapper.toResumenDTO(jugador.getEquipo()));
+            return jugadorDTO;
+        }).toList();
     }
 
     @Override
     public List<JugadorResponseDTO> listarJugadoresPorPosicion(PosicionJugador posicion) {
-        return List.of();
+        //Obtenemos la lista de los jugadores encontrados y vamos uno por uno convirtiendo su entidad equipo a un resumen
+        //del equipo a la par que lo convertimos en el formato responseDTO
+        return jugadorRepository.findByPosicion(posicion).stream().map(jugador -> {
+            //Convertimos la entidad jugador al responseDTO (aun sin su resumen de equipo)
+            JugadorResponseDTO jugadorDTO = jugadorMapper.toResponseDTO(jugador);
+            //Le asignamos su resumen de equipo al jugador con el que estaba relacionado en la entidad
+            jugadorDTO.setEquipo(equipoMapper.toResumenDTO(jugador.getEquipo()));
+            return jugadorDTO;
+        }).toList();
     }
 
     @Override
     public List<JugadorResponseDTO> listarJugadoresPorPais(String pais) {
-        return List.of();
+        //Obtenemos la lista de los jugadores encontrados y vamos uno por uno convirtiendo su entidad equipo a un resumen
+        //del equipo a la par que lo convertimos en el formato responseDTO
+        return jugadorRepository.findByPais(pais).stream().map(jugador -> {
+            //Convertimos la entidad jugador al responseDTO (aun sin su resumen de equipo)
+            JugadorResponseDTO jugadorDTO = jugadorMapper.toResponseDTO(jugador);
+            //Le asignamos su resumen de equipo al jugador con el que estaba relacionado en la entidad
+            jugadorDTO.setEquipo(equipoMapper.toResumenDTO(jugador.getEquipo()));
+            return jugadorDTO;
+        }).toList();
     }
 
     @Override
     public List<JugadorResponseDTO> listarJugadoresPorNombre(String nombre) {
-        return List.of();
+        //Usamos una lista en este metodo ya que en la consulta/metodo que se usa en el repositorio no buscamos con una clausula
+        //WHERE sino con un patron de caracteres LIKE
+        return jugadorRepository.findAllByNombreContainingIgnoreCase(nombre).stream().map(jugador -> {
+            //Convertimos la entidad jugador al responseDTO (aun sin su resumen de equipo)
+            JugadorResponseDTO jugadorDTO = jugadorMapper.toResponseDTO(jugador);
+            //Le asignamos su resumen de equipo al jugador con el que estaba relacionado en la entidad
+            jugadorDTO.setEquipo(equipoMapper.toResumenDTO(jugador.getEquipo()));
+            return jugadorDTO;
+        }).toList();
     }
 
     @Override
     public void eliminarJugador(Long idJugador) {
+        //Buscamos el jugador enviado por idJugador para reconocer si existe o no en la base de datos
+        //y manejar dicho escenario
+        Jugador jugador = jugadorRepository.findById(idJugador).orElseThrow(
+                () -> new RuntimeException("EL juador con id " + idJugador + " no existe")
+        );
 
+        //Eliminamos el jugador enviado por idJugador de la base de datos
+        jugadorRepository.deleteById(idJugador);
     }
 }

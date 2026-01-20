@@ -6,7 +6,7 @@ import com.ligamx.ligamx.dto.response.EquipoResponseDTO;
 import com.ligamx.ligamx.entity.Equipo;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "Spring")
+@Mapper(componentModel = "spring")
 public interface EquipoMapper {
 
     EquipoResponseDTO toResponseDTO(Equipo equipo);

@@ -5,7 +5,7 @@ import com.ligamx.ligamx.entity.DetallePartido;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "Spring")
+@Mapper(componentModel = "spring")
 public interface DetallePartidoMapper {
 
     //Ignoramos el mapeo del campo idEquipo ya que lo vamos a obtener del servicio

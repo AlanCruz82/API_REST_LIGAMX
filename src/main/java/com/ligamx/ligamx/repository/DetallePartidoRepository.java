@@ -1,0 +1,22 @@
+package com.ligamx.ligamx.repository;
+
+import com.ligamx.ligamx.dto.DetallePartidoDTO;
+import com.ligamx.ligamx.entity.DetallePartido;
+import com.ligamx.ligamx.entity.RolPartido;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface DetallePartidoRepository extends JpaRepository<DetallePartido,Long> {
+
+    //Busqueda compuesta para los partidos de un equipo en un torneo y rol dado (LOCAL/VISITANTE)
+    List<DetallePartidoDTO> findByPartidoTorneoIdAndEquipoIdAndRolEquipo(Long idTorneo, Long idEquipo, RolPartido rolEquipo);
+
+    //Busqueda compuesta de los detalles del partido disputado por un equipo en un torneo dado
+    List<DetallePartidoDTO> findByPartidoTorneoIdAndEquipoId(Long torneoId, Long equipoId);
+
+    //Busqueda simple que vamos a usar para poder relacionar el detalle partido con el partido que pida el usuario
+    List<DetallePartidoDTO> findByPartidoId(Long idPartido);
+}

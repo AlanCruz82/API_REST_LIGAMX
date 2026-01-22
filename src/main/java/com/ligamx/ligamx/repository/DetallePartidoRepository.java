@@ -1,6 +1,5 @@
 package com.ligamx.ligamx.repository;
 
-import com.ligamx.ligamx.dto.DetallePartidoDTO;
 import com.ligamx.ligamx.entity.DetallePartido;
 import com.ligamx.ligamx.entity.RolPartido;
 import org.springframework.data.jpa.repository.JpaRepository;

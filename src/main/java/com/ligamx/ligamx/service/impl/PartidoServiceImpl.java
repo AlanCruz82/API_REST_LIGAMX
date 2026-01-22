@@ -1,6 +1,6 @@
 package com.ligamx.ligamx.service.impl;
 
-import com.ligamx.ligamx.dto.DetallePartidoDTO;
+import com.ligamx.ligamx.dto.request.DetallePartidoRequestDTO;
 import com.ligamx.ligamx.dto.request.PartidoRequestDTO;
 import com.ligamx.ligamx.dto.response.PartidoResponseDTO;
 import com.ligamx.ligamx.entity.*;
@@ -63,7 +63,7 @@ public class PartidoServiceImpl implements PartidoService {
 
         //Recorremos cada detalle de partido enviado como dto (equipo-rol-goles) y generamos su entidad detallePartido
         //con los datos de la entidad partido generada anteriormente
-        for (DetallePartidoDTO detalleDTO : partido.getDetallesPartido()){
+        for (DetallePartidoRequestDTO detalleDTO : partido.getDetallesPartido()){
 
             //Buscamos el equipo enviado como detalle del partido por el idEquipo enviado dentro del detalle
             //para que en caso de no existir el equipo manejar ese escenario

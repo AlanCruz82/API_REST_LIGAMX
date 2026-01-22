@@ -1,21 +1,24 @@
 package com.ligamx.ligamx.mapper;
 
-import com.ligamx.ligamx.dto.DetallePartidoDTO;
+import com.ligamx.ligamx.dto.request.DetallePartidoRequestDTO;
+import com.ligamx.ligamx.dto.response.DetallePartidoResponseDTO;
 import com.ligamx.ligamx.entity.DetallePartido;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+        //Referencia al mapper de equipo para poder crear el resumen del equipo al crear el dto de respuesta
+        uses = EquipoMapper.class
+)
 public interface DetallePartidoMapper {
 
     //Ignoramos el mapeo del campo idEquipo ya que lo vamos a obtener del servicio
     //del partido cuando obtengamos el detalle del partido pedido
     @Mapping(target = "equipo", ignore = true)
-    DetallePartido toEntity(DetallePartidoDTO dto);
+    DetallePartido toEntity(DetallePartidoRequestDTO dto);
 
-    //Como DTO de respuesta ya no debemos hacer validaciones o ignorar campos poeque estamos obteniendo la
-    //informacion directamente de la base de datos por lo que ya se garantizo que hubiera integridad en ella
-    @Mapping(source = "equipo.id", target = "idEquipo")
-    DetallePartidoDTO toDTO(DetallePartido entidadDp);
+    //Asignamos el campo equipo de la entidad del detalle al campo equipo (resumen de equipo) del dto de respuesta
+    @Mapping(source = "equipo", target = "equipo")
+    DetallePartidoResponseDTO toResponseDTO(DetallePartido entidadDp);
 }

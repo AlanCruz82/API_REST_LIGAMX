@@ -1,5 +1,6 @@
-package com.ligamx.ligamx.dto;
+package com.ligamx.ligamx.dto.response;
 
+import com.ligamx.ligamx.dto.EquipoResumenDTO;
 import com.ligamx.ligamx.entity.RolPartido;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,9 +11,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DetallePartidoDTO {
+public class DetallePartidoResponseDTO {
 
-    private Long idEquipo;
+    private EquipoResumenDTO equipo;
 
     private RolPartido rolEquipo;
 

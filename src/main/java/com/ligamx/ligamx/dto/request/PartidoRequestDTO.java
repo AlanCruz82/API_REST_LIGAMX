@@ -1,6 +1,5 @@
 package com.ligamx.ligamx.dto.request;
 
-import com.ligamx.ligamx.dto.DetallePartidoDTO;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -34,5 +33,5 @@ public class PartidoRequestDTO {
     private Long idTorneo;
 
     @NotEmpty(message = "No puede haber un partido sin equipos")
-    List<DetallePartidoDTO> detallesPartido;
+    List<DetallePartidoRequestDTO> detallesPartido;
 }

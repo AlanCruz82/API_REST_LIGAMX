@@ -1,6 +1,6 @@
 package com.ligamx.ligamx.dto.response;
 
-import com.ligamx.ligamx.dto.DetallePartidoDTO;
+import com.ligamx.ligamx.dto.request.DetallePartidoRequestDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +20,5 @@ public class PartidoResponseDTO {
     private LocalDateTime fechaHoraInicio;
     private LocalDateTime fechaHoraFin;
     private Long idTorneo;
-    private List<DetallePartidoDTO> detallesPartido;
+    private List<DetallePartidoResponseDTO> detallesPartido;
 }

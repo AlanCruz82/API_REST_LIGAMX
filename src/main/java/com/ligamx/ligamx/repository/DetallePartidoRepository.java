@@ -12,11 +12,11 @@ import java.util.List;
 public interface DetallePartidoRepository extends JpaRepository<DetallePartido,Long> {
 
     //Busqueda compuesta para los partidos de un equipo en un torneo y rol dado (LOCAL/VISITANTE)
-    List<DetallePartidoDTO> findByPartidoTorneoIdAndEquipoIdAndRolEquipo(Long idTorneo, Long idEquipo, RolPartido rolEquipo);
+    List<DetallePartido> findByPartidoTorneoIdAndEquipoIdAndRolEquipo(Long idTorneo, Long idEquipo, RolPartido rolEquipo);
 
     //Busqueda compuesta de los detalles del partido disputado por un equipo en un torneo dado
-    List<DetallePartidoDTO> findByPartidoTorneoIdAndEquipoId(Long torneoId, Long equipoId);
+    List<DetallePartido> findByPartidoTorneoIdAndEquipoId(Long torneoId, Long equipoId);
 
     //Busqueda simple que vamos a usar para poder relacionar el detalle partido con el partido que pida el usuario
-    List<DetallePartidoDTO> findByPartidoId(Long idPartido);
+    List<DetallePartido> findByPartidoId(Long idPartido);
 }

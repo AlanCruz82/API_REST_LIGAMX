@@ -7,7 +7,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 //ComponentModel nos permite indicarle al contenedor de spring que debe generar un bean de esta clase
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+        //Referencia al mapper del equipo para poder obtener el resumen del equipo enviado en el responseDTO del jugador
+        uses = EquipoMapper.class
+)
 public interface JugadorMapper {
 
     //Ignoramos el mapeo del campo equipo ya que en la peticion vamos a recibir solamente el id del equipo
@@ -15,8 +18,6 @@ public interface JugadorMapper {
     @Mapping(target = "equipo", ignore = true)
     Jugador toEntity(JugadorRequestDTO dtoRequest);
 
-    //Ignoramos el mapeo del campo equipo porque es un dto que resume el equipo del jugador con e id y el nombre del equipo
-    //por lo que lo vamos a tener que gestionarlo en el servicio del jugador
-    @Mapping(target = "equipo", ignore = true)
+    @Mapping(source = "equipo", target = "equipo")
     JugadorResponseDTO toResponseDTO(Jugador entidadJugador);
 }

@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface PartidoRepository extends JpaRepository<Partido,Long> {
 
     //Busqueda simple de un partido por su torneo id
-    List<PartidoResponseDTO> findByTorneoId(Long idTorneo);
+    List<Partido> findByTorneoId(Long idTorneo);
 
     //Busqueda compuesta de un partido en base a su torneo id y la jornada especificada en el parametro
-    Optional<PartidoResponseDTO> findByTorneoIdAndJornada(Long idTorneo, int jornada);
+    Optional<Partido> findByTorneoIdAndJornada(Long idTorneo, int jornada);
 }

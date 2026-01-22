@@ -110,16 +110,55 @@ public class PartidoServiceImpl implements PartidoService {
 
     @Override
     public List<PartidoResponseDTO> listarPartidosPorTorneoYEquipo(Long idTorneo, Long idEquipo) {
-        return List.of();
+        List<DetallePartido> detallePartido = dprepository.findByPartidoTorneoIdAndEquipoId(idTorneo,idEquipo);
+
+        //Creamos una lista de tipos partidos donde vamos a almacenar los partidos relacionados con el equipo dado
+        List<Partido> partidosEquipo = new ArrayList<>();
+
+        //Recorremos cada detalle de partido obtenido en base al equipo dado
+        for (DetallePartido dp : detallePartido){
+            //Obtenemos el partido jugado por el equipo
+            Partido partido = partidoRepository.findById(dp.getPartido().getId()).orElseThrow(
+                    () -> new RuntimeException("Partido con id " + dp.getPartido().getId() + " no encontrado")
+            );
+
+            //Agregamos el partido encontrado a la lista de partidos jugados por el equipo
+            partidosEquipo.add(partido);
+        }
+
+        //Convertimos cada partido en un responseDTO y los regresamos como respuesta
+        return partidosEquipo.stream().map(partidoMapper::toResponseDTO).toList();
     }
 
     @Override
     public List<PartidoResponseDTO> listarPartidosPorTorneoEquipoRol(Long idTorneo, Long idEquipo, RolPartido rol) {
-        return List.of();
+        //Obtenemos los detalles de los partidos donde el equipo fue el rol en el torneo dado
+        List<DetallePartido> detallePartido = dprepository.findByPartidoTorneoIdAndEquipoIdAndRolEquipo(idTorneo,idEquipo,rol);
+
+        //Creamos una lista de tipo partido donde vamos a almacenar los partidos relacionados con el detalle de partido
+        List<Partido> partidosEquipo = new ArrayList<>();
+
+        //Recorremos cada detalle de partido para poder obtener el partido con el que esta relacionado
+        for (DetallePartido dp : detallePartido){
+
+            //Buscamos el partido con el que esta relacionado el detalle partido del equipo con rol dado
+            Partido partido = partidoRepository.findById(dp.getPartido().getId()).orElseThrow(
+                    () -> new RuntimeException("EL partido con id " + dp.getPartido().getId() + " no se encontro")
+            );
+
+            //Agregamos el partido encontrado a los partidos del equipo y rol dado
+            partidosEquipo.add(partido);
+        }
+
+        //Convertimos cada partido en su responseDTO y los regresamos como respuesta
+        return partidosEquipo.stream().map(partidoMapper::toResponseDTO).toList();
     }
 
     @Override
-    public PartidoResponseDTO listarPartidoPorTorneoYJornada(Long idTorneo, int jornada) {
-        return null;
+    public List<PartidoResponseDTO> listarPartidosPorTorneoYJornada(Long idTorneo, int jornada) {
+        //Obtenemos el partido por el torneo y jornada dada del repositorio del partido
+        List<Partido> partidos = partidoRepository.findByTorneoIdAndJornada(idTorneo,jornada);
+
+        return partidos.stream().map(partidoMapper::toResponseDTO).toList();
     }
 }

@@ -13,5 +13,5 @@ public interface PartidoService {
     List<PartidoResponseDTO> listarPartidosPorTorneo(Long idTorneo);
     List<PartidoResponseDTO> listarPartidosPorTorneoYEquipo(Long idTorneo, Long idEquipo);
     List<PartidoResponseDTO> listarPartidosPorTorneoEquipoRol(Long idTorneo, Long idEquipo, RolPartido rol);
-    PartidoResponseDTO listarPartidoPorTorneoYJornada(Long idTorneo, int jornada);
+    List<PartidoResponseDTO> listarPartidosPorTorneoYJornada(Long idTorneo, int jornada);
 }

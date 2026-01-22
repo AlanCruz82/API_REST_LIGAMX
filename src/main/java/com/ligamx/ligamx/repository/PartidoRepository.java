@@ -15,5 +15,5 @@ public interface PartidoRepository extends JpaRepository<Partido,Long> {
     List<Partido> findByTorneoId(Long idTorneo);
 
     //Busqueda compuesta de un partido en base a su torneo id y la jornada especificada en el parametro
-    Optional<Partido> findByTorneoIdAndJornada(Long idTorneo, int jornada);
+    List<Partido> findByTorneoIdAndJornada(Long idTorneo, int jornada);
 }

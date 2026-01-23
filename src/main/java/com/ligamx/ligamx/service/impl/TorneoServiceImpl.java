@@ -2,6 +2,7 @@ package com.ligamx.ligamx.service.impl;
 
 import com.ligamx.ligamx.dto.request.DetalleTorneoRequestDTO;
 import com.ligamx.ligamx.dto.request.TorneoRequestDTO;
+import com.ligamx.ligamx.dto.response.DetalleTorneoResponseDTO;
 import com.ligamx.ligamx.dto.response.TorneoResponseDTO;
 import com.ligamx.ligamx.entity.DetalleTorneo;
 import com.ligamx.ligamx.entity.Equipo;
@@ -110,18 +111,13 @@ public class TorneoServiceImpl implements TorneoService {
     }
 
     @Override
-    public TorneoResponseDTO listarTorneoPorEquipo(Long idTorneo, Long idEquipo) {
+    public DetalleTorneoResponseDTO listarTorneoPorEquipo(Long idTorneo, Long idEquipo) {
         //Validamos la existencia del equipo y del torneo
         DetalleTorneo dt = dtRepository.findByTorneoIdAndEquipoId(idTorneo,idEquipo).orElseThrow(
                 () -> new RuntimeException("EL torneo no fue encontrado por el id del torneo y equipo dado")
         );
 
-        //Obtenemos el torneo del equipo dado
-        Torneo torneo = torneoRepository.findById(dt.getTorneo().getId()).orElseThrow(
-                () -> new RuntimeException("El torneo con id " + dt.getTorneo().getId() + " no se encontro")
-        );
-
-        return torneoMapper.toResponseDTO(torneo);
+        return dtMapper.toResponseDTO(dt);
     }
 
     @Override

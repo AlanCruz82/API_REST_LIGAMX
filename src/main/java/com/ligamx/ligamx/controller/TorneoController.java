@@ -1,6 +1,7 @@
 package com.ligamx.ligamx.controller;
 
 import com.ligamx.ligamx.dto.request.TorneoRequestDTO;
+import com.ligamx.ligamx.dto.response.DetalleTorneoResponseDTO;
 import com.ligamx.ligamx.dto.response.TorneoResponseDTO;
 import com.ligamx.ligamx.entity.NombreTorneo;
 import com.ligamx.ligamx.service.TorneoService;
@@ -26,7 +27,7 @@ public class TorneoController {
     }
 
     @GetMapping("/torneo_equipo/{idTorneo}/{idEquipo}")
-    public ResponseEntity<TorneoResponseDTO> listarTorneoPorEquipo(@PathVariable Long idTorneo, @PathVariable Long idEquipo){
+    public ResponseEntity<DetalleTorneoResponseDTO> listarTorneoPorEquipo(@PathVariable Long idTorneo, @PathVariable Long idEquipo){
         return ResponseEntity.ok(torneoService.listarTorneoPorEquipo(idTorneo,idEquipo));
     }
 

@@ -1,6 +1,5 @@
 package com.ligamx.ligamx.dto.request;
 
-import com.ligamx.ligamx.dto.DetalleTorneoDTO;
 import com.ligamx.ligamx.entity.NombreTorneo;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +10,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -32,5 +30,5 @@ public class TorneoRequestDTO {
     private Integer anio;
 
     @NotEmpty(message = "El torneo no puede no tener equipos participando")
-    private List<DetalleTorneoDTO> detallesTorneo;
+    private List<DetalleTorneoRequestDTO> detallesTorneo;
 }

@@ -1,6 +1,5 @@
 package com.ligamx.ligamx.dto.response;
 
-import com.ligamx.ligamx.dto.DetalleTorneoDTO;
 import com.ligamx.ligamx.entity.NombreTorneo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,5 +20,5 @@ public class TorneoResponseDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private Integer anio;
-    private List<DetalleTorneoDTO> detallesTorneo;
+    private List<DetalleTorneoResponseDTO> detallesTorneo;
 }

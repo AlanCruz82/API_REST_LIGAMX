@@ -1,6 +1,7 @@
 package com.ligamx.ligamx.mapper;
 
 import com.ligamx.ligamx.dto.request.DetalleTorneoRequestDTO;
+import com.ligamx.ligamx.dto.response.DetalleTorneoResponseDTO;
 import com.ligamx.ligamx.entity.DetalleTorneo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,10 +16,11 @@ public interface DetalleTorneoMapper {
     //Ignoramos el mapeo del idEquipo ya que lo vamos a obtener en el
     //servicio del torneo
     @Mapping(target = "equipo", ignore = true)
+    @Mapping(target = "torneo", ignore = true)
     DetalleTorneo toEntity(DetalleTorneoRequestDTO dto);
 
     //Referencia del campo equipo que tiene la entidad detalleTorneo que debe ser mapeado y convertido a un resumen del equipo
     //para dar como respuesta en el dto
     @Mapping(source = "equipo", target = "equipo")
-    DetalleTorneoRequestDTO toDTO(DetalleTorneo entidadDt);
+    DetalleTorneoResponseDTO toResponseDTO(DetalleTorneo entidadDt);
 }

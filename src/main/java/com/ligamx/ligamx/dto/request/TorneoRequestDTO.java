@@ -21,10 +21,10 @@ public class TorneoRequestDTO {
     private NombreTorneo nombre;
 
     @NotNull(message = "La fecha de inicio del torneo no puede ser nula")
-    private LocalDate fechaHoraInicio;
+    private LocalDate fechaInicio;
 
     @NotNull(message = "La fecha de fin del torneo no puede ser nula")
-    private LocalDate fechaHoraFin;
+    private LocalDate fechaFin;
 
     @NotNull(message = "El año del torneo no puede ser nulo")
     private Integer anio;

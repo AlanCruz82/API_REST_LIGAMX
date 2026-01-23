@@ -25,10 +25,10 @@ public class Torneo {
     @Enumerated(value = EnumType.STRING)
     private NombreTorneo nombre;
 
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDate fechaInicio;
 
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDate fechaFin;
 
     @Column(updatable = false, nullable = false)

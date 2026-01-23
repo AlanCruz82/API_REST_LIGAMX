@@ -8,6 +8,8 @@ import com.ligamx.ligamx.entity.DetalleTorneo;
 import com.ligamx.ligamx.entity.Equipo;
 import com.ligamx.ligamx.entity.NombreTorneo;
 import com.ligamx.ligamx.entity.Torneo;
+import com.ligamx.ligamx.exception.ResourceConflictException;
+import com.ligamx.ligamx.exception.ResourceNotFoundException;
 import com.ligamx.ligamx.mapper.DetalleTorneoMapper;
 import com.ligamx.ligamx.mapper.TorneoMapper;
 import com.ligamx.ligamx.repository.DetalleTorneoRepository;
@@ -49,21 +51,13 @@ public class TorneoServiceImpl implements TorneoService {
         //crear
         if (torneoRepository.existsByNombreAndAnio(torneo.getNombre(),torneo.getAnio())){
             //En caso de existir un regitro del torneo que se quiere crear le avisamos al controlador
-            throw new RuntimeException("El torneo ya ha sido registrado previamente");
+            throw new ResourceConflictException("El torneo ya ha sido registrado previamente");
         }else {
             //En caso de que no se haya registrado previamente comenzamos a validar los equipos enviados como detalle del
             //torneo y a contruir el torneo
 
-            System.out.println("Fecha inicio " + torneo.getFechaInicio());
-            System.out.println("Fecha fin " + torneo.getFechaFin());
-            System.out.println("Equipos " + torneo.getDetallesTorneo().size());
-
             //Convertimos el torneo enviado como requestDTO a una entidad de torneo(aun sin detallesTorneo)
             Torneo entidadTorneo = torneoMapper.toEntity(torneo);
-
-            System.out.println("Fecha inicio " + entidadTorneo.getFechaInicio());
-            System.out.println("Fecha inicio " + entidadTorneo.getFechaFin());
-            System.out.println("Equipos " + entidadTorneo.getDetallesTorneo().size());
 
             //Creamos una lista para almacenar los equipos enviados y despues poder recorrerla
             List<DetalleTorneoRequestDTO> equiposTorneo = torneo.getDetallesTorneo();
@@ -77,7 +71,7 @@ public class TorneoServiceImpl implements TorneoService {
             for (DetalleTorneoRequestDTO dtDTO : equiposTorneo){
                 //Validamos si el equipo enviado en base a su id existe en la base de datos
                 Equipo equipo = equipoRepository.findById(dtDTO.getIdEquipo()).orElseThrow(
-                        () -> new RuntimeException("El equipo con id " + dtDTO.getIdEquipo() + " no existe")
+                        () -> new ResourceNotFoundException("El equipo con id " + dtDTO.getIdEquipo() + " no existe")
                 );
 
                 //Convertimos el detalleTorneoDTO a su entidad (aun sin equipo ni torneo asignado)
@@ -104,7 +98,7 @@ public class TorneoServiceImpl implements TorneoService {
     @Override
     public TorneoResponseDTO listarTorneoPorNombreAnio(NombreTorneo nombre, Integer anio) {
         Torneo torneo = torneoRepository.findByNombreAndAnio(nombre,anio).orElseThrow(
-                () -> new RuntimeException("El torneo no fue encontrado por el nombre y año dado")
+                () -> new ResourceNotFoundException("El torneo no fue encontrado por el nombre y año dado")
         );
 
         return torneoMapper.toResponseDTO(torneo);
@@ -114,7 +108,7 @@ public class TorneoServiceImpl implements TorneoService {
     public DetalleTorneoResponseDTO listarTorneoPorEquipo(Long idTorneo, Long idEquipo) {
         //Validamos la existencia del equipo y del torneo
         DetalleTorneo dt = dtRepository.findByTorneoIdAndEquipoId(idTorneo,idEquipo).orElseThrow(
-                () -> new RuntimeException("EL torneo no fue encontrado por el id del torneo y equipo dado")
+                () -> new ResourceNotFoundException("EL torneo no fue encontrado por el id del torneo y equipo dado")
         );
 
         return dtMapper.toResponseDTO(dt);
@@ -124,7 +118,7 @@ public class TorneoServiceImpl implements TorneoService {
     public void eliminarTorneo(Long idTorneo) {
         //Validamos la existencia del torneo en base al id dado
         Torneo torneo = torneoRepository.findById(idTorneo).orElseThrow(
-                () -> new RuntimeException("EL torneo con id " + idTorneo + " no se encontro")
+                () -> new ResourceNotFoundException("El torneo con id " + idTorneo + " no se encontro")
         );
 
         //Eliminamos el equipo de la base de datos

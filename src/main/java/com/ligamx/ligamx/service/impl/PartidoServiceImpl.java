@@ -4,6 +4,7 @@ import com.ligamx.ligamx.dto.request.DetallePartidoRequestDTO;
 import com.ligamx.ligamx.dto.request.PartidoRequestDTO;
 import com.ligamx.ligamx.dto.response.PartidoResponseDTO;
 import com.ligamx.ligamx.entity.*;
+import com.ligamx.ligamx.exception.ResourceNotFoundException;
 import com.ligamx.ligamx.mapper.DetallePartidoMapper;
 import com.ligamx.ligamx.mapper.PartidoMapper;
 import com.ligamx.ligamx.repository.DetallePartidoRepository;
@@ -48,7 +49,7 @@ public class PartidoServiceImpl implements PartidoService {
     public PartidoResponseDTO crearPartido(PartidoRequestDTO partido) {
         //Buscamos el torneo del partido enviado como idTorneo para que, en caso de no existir manejar ese escenario
         Torneo torneo = torneoRepository.findById(partido.getIdTorneo()).orElseThrow(
-                () -> new RuntimeException("EL torneo con id " + partido.getIdTorneo() + " no existe")
+                () -> new ResourceNotFoundException("EL torneo con id " + partido.getIdTorneo() + " no existe")
         );
 
         //Convertimos el requestDTO de entrada por la entidad del partido (aun sin asginar sus campos de torneo y detallesPartido)
@@ -68,7 +69,7 @@ public class PartidoServiceImpl implements PartidoService {
             //Buscamos el equipo enviado como detalle del partido por el idEquipo enviado dentro del detalle
             //para que en caso de no existir el equipo manejar ese escenario
             Equipo equipo = equipoRepository.findById(detalleDTO.getIdEquipo()).orElseThrow(
-                    () -> new RuntimeException("El equipo con id " + detalleDTO.getIdEquipo() + " no existe")
+                    () -> new ResourceNotFoundException("El equipo con id " + detalleDTO.getIdEquipo() + " no existe")
             );
 
             //Convertimos el detalleDTO a su entidad para poder relacionarlo con su correspondiente partido
@@ -97,7 +98,7 @@ public class PartidoServiceImpl implements PartidoService {
     @Override
     public void eliminarPartido(Long idPartido) {
         Partido partido = partidoRepository.findById(idPartido).orElseThrow(
-                () -> new RuntimeException("EL partido con id " + idPartido + " no existe")
+                () -> new ResourceNotFoundException("EL partido con id " + idPartido + " no existe")
         );
 
         partidoRepository.deleteById(idPartido);
@@ -119,7 +120,7 @@ public class PartidoServiceImpl implements PartidoService {
         for (DetallePartido dp : detallePartido){
             //Obtenemos el partido jugado por el equipo
             Partido partido = partidoRepository.findById(dp.getPartido().getId()).orElseThrow(
-                    () -> new RuntimeException("Partido con id " + dp.getPartido().getId() + " no encontrado")
+                    () -> new ResourceNotFoundException("Partido con id " + dp.getPartido().getId() + " no encontrado")
             );
 
             //Agregamos el partido encontrado a la lista de partidos jugados por el equipo
@@ -143,7 +144,7 @@ public class PartidoServiceImpl implements PartidoService {
 
             //Buscamos el partido con el que esta relacionado el detalle partido del equipo con rol dado
             Partido partido = partidoRepository.findById(dp.getPartido().getId()).orElseThrow(
-                    () -> new RuntimeException("EL partido con id " + dp.getPartido().getId() + " no se encontro")
+                    () -> new ResourceNotFoundException("EL partido con id " + dp.getPartido().getId() + " no se encontro")
             );
 
             //Agregamos el partido encontrado a los partidos del equipo y rol dado

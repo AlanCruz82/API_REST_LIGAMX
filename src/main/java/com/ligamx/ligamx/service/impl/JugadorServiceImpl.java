@@ -6,6 +6,7 @@ import com.ligamx.ligamx.dto.response.JugadorResponseDTO;
 import com.ligamx.ligamx.entity.Equipo;
 import com.ligamx.ligamx.entity.Jugador;
 import com.ligamx.ligamx.entity.PosicionJugador;
+import com.ligamx.ligamx.exception.ResourceNotFoundException;
 import com.ligamx.ligamx.mapper.EquipoMapper;
 import com.ligamx.ligamx.mapper.JugadorMapper;
 import com.ligamx.ligamx.repository.EquipoRepository;
@@ -24,21 +25,19 @@ public class JugadorServiceImpl implements JugadorService {
     private final EquipoRepository equipoRepository;
     //Bean del mapper para poder transformar las entidades del repositorio a DTO y viceversa
     private final JugadorMapper jugadorMapper;
-    //Bean del mapper del equipo para poder transformar el campo del equipo en un resumen del equipo
-    private final EquipoMapper equipoMapper;
 
-    public JugadorServiceImpl(JugadorRepository jugadorRepository, EquipoRepository equipoRepository, JugadorMapper jugadorMapper, EquipoMapper equipoMapper) {
+    public JugadorServiceImpl(JugadorRepository jugadorRepository,EquipoRepository equipoRepository,
+                              JugadorMapper jugadorMapper) {
         this.jugadorRepository = jugadorRepository;
         this.equipoRepository = equipoRepository;
         this.jugadorMapper = jugadorMapper;
-        this.equipoMapper = equipoMapper;
     }
 
     @Override
     public JugadorResponseDTO crearJugador(JugadorRequestDTO nuevoJugador) {
         //Buscamos el equipo del idEquipo enviado en el requestDTO para comprobar si existe o si no avisarle al usuario
         Equipo equipo = equipoRepository.findById(nuevoJugador.getIdEquipo()).orElseThrow(
-                () -> new RuntimeException("El equipo con id " + nuevoJugador.getIdEquipo() + " no existe")
+                () -> new ResourceNotFoundException("El equipo con id " + nuevoJugador.getIdEquipo() + " no existe")
         );
 
         //Convertimos el requestDTO a una entidad de jugador para poder establecer el equipo del jugador
@@ -55,12 +54,12 @@ public class JugadorServiceImpl implements JugadorService {
     public JugadorResponseDTO actualizarJugador(Long idJugador, JugadorRequestDTO jugador) {
         //Buscamos el jugador por el id enviado en el argumento para en caso de que no exista avisarle al usuario
         Jugador jugadorPorId= jugadorRepository.findById(idJugador).orElseThrow(
-                () -> new RuntimeException("El jugador con id " + idJugador + " no existe")
+                () -> new ResourceNotFoundException("El jugador con id " + idJugador + " no existe")
         );
 
         //Buscamos el id del equipo enviado en el resquestDTO del jugador para en caso de que no exista avisarle al usuario
         Equipo equipo = equipoRepository.findById(jugador.getIdEquipo()).orElseThrow(
-                () -> new RuntimeException("El equipo con id " + jugador.getIdEquipo() + " no existe")
+                () -> new ResourceNotFoundException("El equipo con id " + jugador.getIdEquipo() + " no existe")
         );
 
         //Le establecemos su campo de equipo a la entidad del jugador
@@ -83,12 +82,12 @@ public class JugadorServiceImpl implements JugadorService {
     public JugadorResponseDTO atualizarEquipoJugador(Long idJugador, Long idEquipo) {
         //Buscamos el jugador por el idJugador enviado para que en caso de que no exista avisarle al usuario
         Jugador jugador = jugadorRepository.findById(idJugador).orElseThrow(
-                () -> new RuntimeException("El jugador con id " + idJugador + " no existe")
+                () -> new ResourceNotFoundException("El jugador con id " + idJugador + " no existe")
         );
 
         //Buscamos el equipo por el id enviado para que en caso de que no exista avisarle al usuario
         Equipo equipo = equipoRepository.findById(idEquipo).orElseThrow(
-                () -> new RuntimeException("El equipo con id " + idEquipo + " no existe")
+                () -> new ResourceNotFoundException("El equipo con id " + idEquipo + " no existe")
         );
         //Le colocamos el nuevo equipo al jugador
         jugador.setEquipo(equipo);
@@ -103,7 +102,7 @@ public class JugadorServiceImpl implements JugadorService {
         //Buscamos el jugador con el idJugador pasado como argumento para que en caso de no encontrarlo
         //manejar ese escenario
         Jugador jugador = jugadorRepository.findById(idJugador).orElseThrow(
-                () -> new RuntimeException("EL jugador con id " + idJugador + " no existe")
+                () -> new ResourceNotFoundException("EL jugador con id " + idJugador + " no existe")
         );
 
         //Actualizamos la posicion del jugador almamcenado en la base de datos por la nuevaPosicion enviada como argumento
@@ -154,7 +153,7 @@ public class JugadorServiceImpl implements JugadorService {
         //Buscamos el jugador enviado por idJugador para reconocer si existe o no en la base de datos
         //y manejar dicho escenario
         Jugador jugador = jugadorRepository.findById(idJugador).orElseThrow(
-                () -> new RuntimeException("EL juador con id " + idJugador + " no existe")
+                () -> new ResourceNotFoundException("EL juador con id " + idJugador + " no existe")
         );
 
         //Eliminamos el jugador enviado por idJugador de la base de datos

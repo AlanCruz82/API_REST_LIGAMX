@@ -3,6 +3,7 @@ package com.ligamx.ligamx.controller;
 import com.ligamx.ligamx.dto.request.EquipoRequestDTO;
 import com.ligamx.ligamx.dto.response.EquipoResponseDTO;
 import com.ligamx.ligamx.service.EquipoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,12 +38,12 @@ public class EquipoController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<EquipoResponseDTO> registrarEquipo(@RequestBody EquipoRequestDTO nuevoEquipo){
+    public ResponseEntity<EquipoResponseDTO> registrarEquipo(@Valid @RequestBody EquipoRequestDTO nuevoEquipo){
         return ResponseEntity.status(HttpStatus.CREATED).body(equipoService.crearEquipo(nuevoEquipo));
     }
 
     @PutMapping("/actualizar/{idEquipo}")
-    public ResponseEntity<EquipoResponseDTO> actualizarEquipo(@PathVariable Long idEquipo, @RequestBody EquipoRequestDTO equipoActualizado){
+    public ResponseEntity<EquipoResponseDTO> actualizarEquipo(@PathVariable Long idEquipo,@Valid @RequestBody EquipoRequestDTO equipoActualizado){
         return ResponseEntity.ok(equipoService.actualizarEquipo(idEquipo,equipoActualizado));
     }
 

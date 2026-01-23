@@ -4,6 +4,7 @@ import com.ligamx.ligamx.dto.request.PartidoRequestDTO;
 import com.ligamx.ligamx.dto.response.PartidoResponseDTO;
 import com.ligamx.ligamx.entity.RolPartido;
 import com.ligamx.ligamx.service.PartidoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class PartidoController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<PartidoResponseDTO> crearPartido(@RequestBody PartidoRequestDTO partido){
+    public ResponseEntity<PartidoResponseDTO> crearPartido(@Valid @RequestBody PartidoRequestDTO partido){
         return ResponseEntity.status(HttpStatus.CREATED).body(partidoService.crearPartido(partido));
     }
 

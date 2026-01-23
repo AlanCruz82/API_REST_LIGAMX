@@ -5,6 +5,7 @@ import com.ligamx.ligamx.dto.response.DetalleTorneoResponseDTO;
 import com.ligamx.ligamx.dto.response.TorneoResponseDTO;
 import com.ligamx.ligamx.entity.NombreTorneo;
 import com.ligamx.ligamx.service.TorneoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class TorneoController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<TorneoResponseDTO> crearTorneo(@RequestBody TorneoRequestDTO torneo){
+    public ResponseEntity<TorneoResponseDTO> crearTorneo(@Valid @RequestBody TorneoRequestDTO torneo){
         return ResponseEntity.status(HttpStatus.CREATED).body(torneoService.crearTorneo(torneo));
     }
 

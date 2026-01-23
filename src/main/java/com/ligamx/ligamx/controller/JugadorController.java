@@ -4,6 +4,7 @@ import com.ligamx.ligamx.dto.request.JugadorRequestDTO;
 import com.ligamx.ligamx.dto.response.JugadorResponseDTO;
 import com.ligamx.ligamx.entity.PosicionJugador;
 import com.ligamx.ligamx.service.JugadorService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,12 +49,12 @@ public class JugadorController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<JugadorResponseDTO> registrarJugador(@RequestBody JugadorRequestDTO jugador){
+    public ResponseEntity<JugadorResponseDTO> registrarJugador(@Valid @RequestBody JugadorRequestDTO jugador){
         return ResponseEntity.ok(jugadorService.crearJugador(jugador));
     }
 
     @PutMapping("/actualizar/{idJugador}")
-    public ResponseEntity<JugadorResponseDTO> actualizarJugador(@PathVariable Long idJugador, @RequestBody JugadorRequestDTO jugador){
+    public ResponseEntity<JugadorResponseDTO> actualizarJugador(@PathVariable Long idJugador, @Valid @RequestBody JugadorRequestDTO jugador){
         return ResponseEntity.ok(jugadorService.actualizarJugador(idJugador,jugador));
     }
 

@@ -7,10 +7,7 @@ import com.ligamx.ligamx.entity.*;
 import com.ligamx.ligamx.exception.ResourceNotFoundException;
 import com.ligamx.ligamx.mapper.DetallePartidoMapper;
 import com.ligamx.ligamx.mapper.PartidoMapper;
-import com.ligamx.ligamx.repository.DetallePartidoRepository;
-import com.ligamx.ligamx.repository.EquipoRepository;
-import com.ligamx.ligamx.repository.PartidoRepository;
-import com.ligamx.ligamx.repository.TorneoRepository;
+import com.ligamx.ligamx.repository.*;
 import com.ligamx.ligamx.service.PartidoService;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +25,9 @@ public class PartidoServiceImpl implements PartidoService {
     private final TorneoRepository torneoRepository;
     //Bean del repositorio del equipo para poder realizar la busqueda de los equipos enviados como detalle del partido
     private final EquipoRepository equipoRepository;
+    //Bean del repositorio del detalle de torneo utilizado para actualizar el puntaje de los equipos al registrar un nuevo
+    //partido
+    private final DetalleTorneoRepository dtRepository;
     //Bean del partidoMapper para poder convertir las peticiones y entidades a respuestas en formato DTO
     private final PartidoMapper partidoMapper;
     //Bean del detallePartidoMapper para poder convertir las entidades del detalle de partido en un resumen de respuesta DTO
@@ -36,11 +36,12 @@ public class PartidoServiceImpl implements PartidoService {
 
     public PartidoServiceImpl(PartidoRepository partidoRepository, DetallePartidoRepository dprepository,
                               TorneoRepository torneoRepository, EquipoRepository equipoRepository,
-                              PartidoMapper partidoMapper, DetallePartidoMapper dpMapper) {
+                              DetalleTorneoRepository dtRepository, PartidoMapper partidoMapper, DetallePartidoMapper dpMapper) {
         this.partidoRepository = partidoRepository;
         this.dprepository = dprepository;
         this.torneoRepository = torneoRepository;
         this.equipoRepository = equipoRepository;
+        this.dtRepository = dtRepository;
         this.partidoMapper = partidoMapper;
         this.dpMapper = dpMapper;
     }
@@ -87,6 +88,45 @@ public class PartidoServiceImpl implements PartidoService {
 
         //Le asignamos su lista de entidades de detalle de partido generada a la entidad del partido
         entidadPartido.setDetallesPartido(entidadesDetallePartido);
+
+        //Asignamos cada detalle de partido a un rol determinado[no importa este rol ya que solo queremos validar
+        // quien metio mas goles que el otro o si fue empate]
+        DetallePartido dpLocal = entidadesDetallePartido.get(0);
+        DetallePartido dpVisitante = entidadesDetallePartido.get(1);
+
+        //Obtenemos la entidad DetalleTorneo de cada equipo que forma parte del detalle del partido para poder
+        //actualizar sus estadisticas
+        DetalleTorneo dtLocal= dtRepository.findByTorneoIdAndEquipoId(entidadPartido.getTorneo().getId(),
+                dpLocal.getEquipo().getId()).orElseThrow(
+                () -> new ResourceNotFoundException("EL equipo con no fue encontrado")
+        );
+
+        DetalleTorneo dtVisitante= dtRepository.findByTorneoIdAndEquipoId(entidadPartido.getTorneo().getId(),
+                dpVisitante.getEquipo().getId()).orElseThrow(
+                () -> new ResourceNotFoundException("EL equipo con no fue encontrado")
+        );
+
+        //Validamos el escenario en el que el equipo del primer detalle de partido le gano al segundo
+        if(dpLocal.getGoles() > dpVisitante.getGoles()){
+            dtLocal.setVictorias(dtLocal.getVictorias()+1);
+            dtLocal.setPuntos(dtLocal.getPuntos()+3);
+            dtVisitante.setDerrotas(dtVisitante.getDerrotas()+1);
+            //Validamos el escenario en el que el equipo del segundo detalle de partido le gano al primero
+        }else if(dpVisitante.getGoles() > dpLocal.getGoles()){
+            dtVisitante.setVictorias(dtVisitante.getVictorias()+1);
+            dtVisitante.setPuntos(dtVisitante.getPuntos()+3);
+            dtLocal.setDerrotas(dtLocal.getDerrotas()+1);
+            //Escenario de empate y reparticion de puntos
+        }else{
+            dtLocal.setEmpates(dtLocal.getEmpates()+1);
+            dtLocal.setPuntos(dtLocal.getPuntos()+1);
+            dtVisitante.setEmpates(dtVisitante.getEmpates()+1);
+            dtVisitante.setPuntos(dtVisitante.getPuntos()+1);
+        }
+
+        //Guardamos los detalles de torneo de cada equipo con sus nuevas estadisticas
+        dtRepository.save(dtLocal);
+        dtRepository.save(dtVisitante);
 
         //Guardamos la entidad del partido ya con sus campos torneo y detallesPartido asignados y regresamos el responseDTO
         //con la informacion del partido que guardamos en la base de datos

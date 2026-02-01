@@ -52,47 +52,44 @@ public class TorneoServiceImpl implements TorneoService {
         if (torneoRepository.existsByNombreAndAnio(torneo.getNombre(),torneo.getAnio())){
             //En caso de existir un regitro del torneo que se quiere crear le avisamos al controlador
             throw new ResourceConflictException("El torneo ya ha sido registrado previamente");
-        }else {
-            //En caso de que no se haya registrado previamente comenzamos a validar los equipos enviados como detalle del
-            //torneo y a contruir el torneo
-
-            //Convertimos el torneo enviado como requestDTO a una entidad de torneo(aun sin detallesTorneo)
-            Torneo entidadTorneo = torneoMapper.toEntity(torneo);
-
-            //Creamos una lista para almacenar los equipos enviados y despues poder recorrerla
-            List<DetalleTorneoRequestDTO> equiposTorneo = torneo.getDetallesTorneo();
-
-            //Creamos una lista de tipo DetalleTorneo en la que vamos ir almacenando los detallesTorneo
-            //construidos en el recorrido de los detalles enviados como dto
-            List<DetalleTorneo> detallesTorneo = new ArrayList<>();
-
-            //Empezamos a recorrer cada equipo para verificar si ya existe en la base de datos y en caso de que no
-            //manejar ese escenario
-            for (DetalleTorneoRequestDTO dtDTO : equiposTorneo){
-                //Validamos si el equipo enviado en base a su id existe en la base de datos
-                Equipo equipo = equipoRepository.findById(dtDTO.getIdEquipo()).orElseThrow(
-                        () -> new ResourceNotFoundException("El equipo con id " + dtDTO.getIdEquipo() + " no existe")
-                );
-
-                //Convertimos el detalleTorneoDTO a su entidad (aun sin equipo ni torneo asignado)
-                DetalleTorneo dt = dtMapper.toEntity(dtDTO);
-
-                //Asignamos el euipo encontrado a la entidad detalle torneo
-                dt.setEquipo(equipo);
-
-                //Asignamos el torneo previamente creado como torneo de la entidad detalle torneo
-                dt.setTorneo(entidadTorneo);
-
-                //Agregamos el detalle de torneo generado a la lista de detalles de torneo
-                detallesTorneo.add(dt);
-            }
-
-            //Asignamos sus entidades de detallesTorneo al torneo creado
-            entidadTorneo.setDetallesTorneo(detallesTorneo);
-
-            //Guardamos el torneo creado en la base de datos a la par que regresamos el torneo guardado como responseDTO
-            return torneoMapper.toResponseDTO(torneoRepository.save(entidadTorneo));
         }
+
+        //Convertimos el torneo enviado como requestDTO a una entidad de torneo(aun sin detallesTorneo)
+        Torneo entidadTorneo = torneoMapper.toEntity(torneo);
+
+        //Creamos una lista para almacenar los equipos enviados y despues poder recorrerla
+        List<DetalleTorneoRequestDTO> equiposTorneo = torneo.getDetallesTorneo();
+
+        //Creamos una lista de tipo DetalleTorneo en la que vamos ir almacenando los detallesTorneo
+        //construidos en el recorrido de los detalles enviados como dto
+        List<DetalleTorneo> detallesTorneo = new ArrayList<>();
+
+        //Empezamos a recorrer cada equipo para verificar si ya existe en la base de datos y en caso de que no
+        //manejar ese escenario
+        for (DetalleTorneoRequestDTO dtDTO : equiposTorneo){
+            //Validamos si el equipo enviado en base a su id existe en la base de datos
+            Equipo equipo = equipoRepository.findById(dtDTO.getIdEquipo()).orElseThrow(
+                    () -> new ResourceNotFoundException("El equipo con id " + dtDTO.getIdEquipo() + " no existe")
+            );
+
+            //Convertimos el detalleTorneoDTO a su entidad (aun sin equipo ni torneo asignado)
+            DetalleTorneo dt = dtMapper.toEntity(dtDTO);
+
+            //Asignamos el euipo encontrado a la entidad detalle torneo
+            dt.setEquipo(equipo);
+
+            //Asignamos el torneo previamente creado como torneo de la entidad detalle torneo
+            dt.setTorneo(entidadTorneo);
+
+            //Agregamos el detalle de torneo generado a la lista de detalles de torneo
+            detallesTorneo.add(dt);
+        }
+
+        //Asignamos sus entidades de detallesTorneo al torneo creado
+        entidadTorneo.setDetallesTorneo(detallesTorneo);
+
+        //Guardamos el torneo creado en la base de datos a la par que regresamos el torneo guardado como responseDTO
+        return torneoMapper.toResponseDTO(torneoRepository.save(entidadTorneo));
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.ligamx.ligamx.dto.request;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,5 +30,6 @@ public class PartidoRequestDTO {
     private Long idTorneo;
 
     @NotEmpty(message = "No puede haber un partido sin equipos")
+    @Size(max = 2, min = 2, message = "El partido no se puede crear con mas de dos equipos o menos de dos equipos")
     List<DetallePartidoRequestDTO> detallesPartido;
 }

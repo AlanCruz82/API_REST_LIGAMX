@@ -3,6 +3,7 @@ package com.ligamx.ligamx.dto.request;
 import com.ligamx.ligamx.entity.NombreTorneo;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,6 @@ public class TorneoRequestDTO {
     private Integer anio;
 
     @NotEmpty(message = "El torneo no puede no tener equipos participando")
+    @Size(max = 18, min = 18, message = "El torneo no puede contener menos de 18 equipos ni mas de 18 equipos para ser creado")
     private List<DetalleTorneoRequestDTO> detallesTorneo;
 }

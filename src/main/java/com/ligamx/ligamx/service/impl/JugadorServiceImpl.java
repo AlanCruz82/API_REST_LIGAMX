@@ -41,10 +41,6 @@ public class JugadorServiceImpl implements JugadorService {
         Equipo equipo = equipoRepository.findById(nuevoJugador.getIdEquipo()).orElseThrow(
                 () -> new ResourceNotFoundException("El equipo con id " + nuevoJugador.getIdEquipo() + " no existe")
         );
-
-        System.out.println("Bandera " + nuevoJugador.getPais().equalsIgnoreCase("mexico"));
-
-        System.out.println("Extranjeros " + jugadorRepository.numeroExtranjerosEquipo(equipo.getId()));
         //Validamos el pais de origen del jugador para en caso de ser extranjero validar el escenario del numero maximo de extranjeros que se pueden inscribir
         if (!(nuevoJugador.getPais()).equalsIgnoreCase("mexico")){
 

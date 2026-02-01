@@ -2,7 +2,10 @@ package com.ligamx.ligamx.repository;
 
 import com.ligamx.ligamx.entity.Jugador;
 import com.ligamx.ligamx.entity.PosicionJugador;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,4 +19,7 @@ public interface JugadorRepository extends JpaRepository<Jugador,Long> {
     List<Jugador> findByEquipoId(Long idEquipo);
     List<Jugador> findByPosicion(PosicionJugador posicion);
     List<Jugador> findByPais(String pais);
+    //Consulta para validar el maximo numero de extranjeros que puede tener un equipo
+    @Query("select count(*) from Jugador where pais not like 'Mexico' and equipo.id = :idEquipo")
+    int numeroExtranjerosEquipo(Long idEquipo);
 }

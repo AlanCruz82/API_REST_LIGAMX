@@ -6,12 +6,14 @@ import com.ligamx.ligamx.dto.response.JugadorResponseDTO;
 import com.ligamx.ligamx.entity.Equipo;
 import com.ligamx.ligamx.entity.Jugador;
 import com.ligamx.ligamx.entity.PosicionJugador;
+import com.ligamx.ligamx.exception.ResourceConflictException;
 import com.ligamx.ligamx.exception.ResourceNotFoundException;
 import com.ligamx.ligamx.mapper.EquipoMapper;
 import com.ligamx.ligamx.mapper.JugadorMapper;
 import com.ligamx.ligamx.repository.EquipoRepository;
 import com.ligamx.ligamx.repository.JugadorRepository;
 import com.ligamx.ligamx.service.JugadorService;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,6 +42,21 @@ public class JugadorServiceImpl implements JugadorService {
                 () -> new ResourceNotFoundException("El equipo con id " + nuevoJugador.getIdEquipo() + " no existe")
         );
 
+        System.out.println("Bandera " + nuevoJugador.getPais().equalsIgnoreCase("mexico"));
+
+        System.out.println("Extranjeros " + jugadorRepository.numeroExtranjerosEquipo(equipo.getId()));
+        //Validamos el pais de origen del jugador para en caso de ser extranjero validar el escenario del numero maximo de extranjeros que se pueden inscribir
+        if (!(nuevoJugador.getPais()).equalsIgnoreCase("mexico")){
+
+            //Obtenemos el numero de extranjeros registrados actualmente para el equipo del jugador enviado
+            int totalExtranjerosEquipo = jugadorRepository.numeroExtranjerosEquipo(equipo.getId());
+
+            //Si el equipo del jugador dado ya inscribio el numero maximo de extranjeros, entonces negamos la inscripcion del nuevo jugador
+            if (totalExtranjerosEquipo >= 9){
+                throw new ResourceConflictException("El equipo " + equipo.getNombre() + " ya inscribio 9 extranjeros");
+            }
+
+        }
         //Convertimos el requestDTO a una entidad de jugador para poder establecer el equipo del jugador
         Jugador jugadorGuardar = jugadorMapper.toEntity(nuevoJugador);
 

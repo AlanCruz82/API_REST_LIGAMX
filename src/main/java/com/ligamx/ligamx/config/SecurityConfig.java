@@ -1,6 +1,8 @@
 package com.ligamx.ligamx.config;
 
+import com.ligamx.ligamx.config.filter.JwtTokenValidator;
 import com.ligamx.ligamx.service.impl.UserDetailsImpl;
+import com.ligamx.ligamx.utils.JWTUtils;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -20,11 +22,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 //Clase que define los compomentes basicos necesarios para implementar la autenticacion de usuarios a traves del provedor DAO
 public class SecurityConfig {
+
+    //Bean de las utilidades del tokenJWT que vamos a utilizar para validar el filtro del JWT
+    private final JWTUtils jwtUtils;
+
+    public SecurityConfig(JWTUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
 
     @Bean
     //Filtros de seguridad que vamos a personalizar para las request entrantes
@@ -48,6 +58,9 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.GET, "/api/v1/partidos/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/torneos/**").permitAll();
 
+                    //Endpoints publicos de autenticacion
+                    http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+
                     //Endpoints publicos que solo usuarios y el administrador van a poder usar
                     http.requestMatchers(HttpMethod.POST, "/api/v1/equipos/**").hasAnyRole( "USER", "ADMIN");
                     http.requestMatchers(HttpMethod.POST, "/api/v1/jugadores/**").hasAnyRole("USER", "ADMIN");
@@ -69,16 +82,26 @@ public class SecurityConfig {
                     //Cualquier otro endpoint solicitado se va a denegar el acceso
                     http.anyRequest().denyAll();
                 })
+                //Establecemos que el filtro del tokenJWT se verifique antes del filtro de autenticacion basica
+                //para poder establecer la autenticidad del usuario sin ser rechazado primero
+                .addFilterBefore(new JwtTokenValidator(this.jwtUtils), BasicAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
-    //Bean de configuracion para el autenticador basico de swagger
+    //Bean de configuracion para la autenticacion con el esquema Bearer JWT de swagger
     public OpenAPI openAPI(){
         return new OpenAPI()
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(
-                        new Components().addSecuritySchemes("basicAuth", new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
-                .addSecurityItem(new SecurityRequirement().addList("basicAuth"));
+                        new Components()
+                                .addSecuritySchemes("bearerAuth",
+                                        new SecurityScheme()
+                                                .type(SecurityScheme.Type.HTTP)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT")
+                                )
+                );
     }
 
     @Bean

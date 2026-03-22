@@ -11,6 +11,7 @@ public interface EquipoService {
     EquipoResponseDTO actualizarCiudadEquipo(Long idEquipo, String nuevaCiudad);
     EquipoResponseDTO actualizarEstadioEquipo(Long idEquipo, String nuevoEstadio);
     void eliminarEquipo(Long idEquipo);
+    EquipoResponseDTO listarEquipoPorId(Long idEquipo);
     List<EquipoResponseDTO> listarEquipos();
     List<EquipoResponseDTO> listarPorCiudad(String ciudad);
     List<EquipoResponseDTO> listarPorEstadio(String estadio);

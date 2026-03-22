@@ -20,7 +20,7 @@ public class TorneoRequestDTO {
 
     @NotNull(message = "El nombre del torneo no puede ser nulo o fuera de las opciones definidas")
     private NombreTorneo nombre;
-
+    
     @NotNull(message = "La fecha de inicio del torneo no puede ser nula")
     private LocalDate fechaInicio;
 

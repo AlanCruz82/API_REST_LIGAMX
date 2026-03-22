@@ -134,6 +134,17 @@ public class JugadorServiceImpl implements JugadorService {
     }
 
     @Override
+    public JugadorResponseDTO listarJugadorPorId(Long idJugador) {
+        //Validamos si el jugador con el id enviado como parametro existe en la base de datos
+        Jugador jugador = jugadorRepository.findById(idJugador).orElseThrow(
+                () -> new ResourceNotFoundException("El jugador con el id " + idJugador + " no existe")
+        );
+
+        //Regresamos el jugador solicitado por id
+        return jugadorMapper.toResponseDTO(jugador);
+    }
+
+    @Override
     public List<JugadorResponseDTO> listarJugadoresPorEquipo(Long idEquipo) {
         //Obtenemos la lista de los jugadores encontrados y vamos uno por uno convirtiendo su entidad equipo a un resumen
         //del equipo a la par que lo convertimos en el formato responseDTO

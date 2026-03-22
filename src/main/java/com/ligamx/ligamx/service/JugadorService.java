@@ -13,6 +13,7 @@ public interface JugadorService {
     JugadorResponseDTO atualizarEquipoJugador(Long idJugador, Long idEquipo);
     JugadorResponseDTO actualizarPosicionJugador(Long idJugador, PosicionJugador nuevaPosicion);
     List<JugadorResponseDTO> listarJugadores();
+    JugadorResponseDTO listarJugadorPorId(Long idJugador);
     List<JugadorResponseDTO> listarJugadoresPorEquipo(Long idEquipo);
     List<JugadorResponseDTO> listarJugadoresPorPosicion(PosicionJugador posicion);
     List<JugadorResponseDTO> listarJugadoresPorPais(String pais);

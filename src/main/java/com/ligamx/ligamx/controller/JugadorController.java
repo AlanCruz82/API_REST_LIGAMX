@@ -28,6 +28,11 @@ public class JugadorController {
         return ResponseEntity.ok(jugadorService.listarJugadores());
     }
 
+    @GetMapping("/{idJugador}")
+    public ResponseEntity<JugadorResponseDTO> listarJugadorPorId(@PathVariable Long idJugador){
+        return ResponseEntity.ok(jugadorService.listarJugadorPorId(idJugador));
+    }
+
     @GetMapping("/nombre/{nombreJugador}")
     public ResponseEntity<List<JugadorResponseDTO>> listarJugadoresPorNombre(@PathVariable String nombreJugador){
         return ResponseEntity.ok(jugadorService.listarJugadoresPorNombre(nombreJugador));

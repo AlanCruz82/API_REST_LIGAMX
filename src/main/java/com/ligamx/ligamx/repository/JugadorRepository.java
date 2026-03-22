@@ -22,4 +22,7 @@ public interface JugadorRepository extends JpaRepository<Jugador,Long> {
     //Consulta para validar el maximo numero de extranjeros que puede tener un equipo
     @Query("select count(*) from Jugador where pais not like 'Mexico' and equipo.id = :idEquipo")
     int numeroExtranjerosEquipo(Long idEquipo);
+
+    //Busqueda para validar relacion de jugador con un equipo (en la eliminacion de un equipo)
+    boolean existsByEquipoId(Long idEquipo);
 }

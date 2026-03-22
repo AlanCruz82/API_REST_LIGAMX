@@ -3,9 +3,13 @@ package com.ligamx.ligamx.service.impl;
 import com.ligamx.ligamx.dto.request.EquipoRequestDTO;
 import com.ligamx.ligamx.dto.response.EquipoResponseDTO;
 import com.ligamx.ligamx.entity.Equipo;
+import com.ligamx.ligamx.exception.ResourceConflictException;
 import com.ligamx.ligamx.exception.ResourceNotFoundException;
 import com.ligamx.ligamx.mapper.EquipoMapper;
+import com.ligamx.ligamx.repository.DetallePartidoRepository;
+import com.ligamx.ligamx.repository.DetalleTorneoRepository;
 import com.ligamx.ligamx.repository.EquipoRepository;
+import com.ligamx.ligamx.repository.JugadorRepository;
 import com.ligamx.ligamx.service.EquipoService;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
@@ -17,10 +21,17 @@ public class EquipoServiceImpl implements EquipoService {
 
     private final EquipoRepository equipoRepository;
     private final EquipoMapper equipoMapper;
+    private final JugadorRepository jugadorRepository;
+    private final DetallePartidoRepository dpRepository;
+    private final DetalleTorneoRepository dtRepository;
 
-    public EquipoServiceImpl(EquipoRepository equipoRepository, EquipoMapper equipoMapper) {
+    public EquipoServiceImpl(EquipoRepository equipoRepository, EquipoMapper equipoMapper, JugadorRepository jugadorRepository,
+                             DetallePartidoRepository dpRepository, DetalleTorneoRepository dtRepository) {
         this.equipoRepository = equipoRepository;
         this.equipoMapper = equipoMapper;
+        this.jugadorRepository = jugadorRepository;
+        this.dpRepository = dpRepository;
+        this.dtRepository = dtRepository;
     }
 
     @Override
@@ -99,8 +110,23 @@ public class EquipoServiceImpl implements EquipoService {
                 () -> new ResourceNotFoundException("El equipo con id " + idEquipo + " no se encontro")
         );
 
+        //Validamos si el equipo que se quiere eliminar no esta presente en registros de otras tablas
+        if(jugadorRepository.existsByEquipoId(idEquipo) || dpRepository.existsByEquipoId(idEquipo) || dtRepository.existsByEquipoId(idEquipo)){
+            throw new ResourceConflictException("No se puede eliminar el equipo con id " + idEquipo + " porque tiene presencia en otros registros");
+        }
+
         //Eliminamos el equipo encontrado por el id enviado
         equipoRepository.deleteById(idEquipo);
+    }
+
+    @Override
+    public EquipoResponseDTO listarEquipoPorId(Long idEquipo) {
+        //Buscamos si el equipo por el id enviado existe en la base de datos
+        Equipo equipo = equipoRepository.findById(idEquipo).orElseThrow(
+                () -> new ResourceNotFoundException("El equipo con id " + idEquipo + " no existe"));
+
+        //Regresamos el equipo solicitado
+        return equipoMapper.toResponseDTO(equipo);
     }
 
     @Override

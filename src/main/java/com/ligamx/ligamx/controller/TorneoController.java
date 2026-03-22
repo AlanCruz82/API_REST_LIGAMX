@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/torneos")
 public class TorneoController {
@@ -21,15 +23,27 @@ public class TorneoController {
         this.torneoService = torneoService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<TorneoResponseDTO>> listarTorneos(){
+        return ResponseEntity.ok(torneoService.listarTorneos());
+    }
+
     @GetMapping("/nombre_anio/{nombreTorneo}/{anio}")
-    public ResponseEntity<TorneoResponseDTO> listarTorneoPorNombreyAnio(@PathVariable NombreTorneo nombreTorneo,
+    public ResponseEntity<TorneoResponseDTO> listarTorneoPorNombreyAnio(@PathVariable String nombreTorneo,
                                                                         @PathVariable Integer anio){
-        return ResponseEntity.ok(torneoService.listarTorneoPorNombreAnio(nombreTorneo,anio));
+        NombreTorneo nombre = NombreTorneo.valueOf(nombreTorneo);
+
+        return ResponseEntity.ok(torneoService.listarTorneoPorNombreAnio(nombre,anio));
     }
 
     @GetMapping("/torneo_equipo/{idTorneo}/{idEquipo}")
     public ResponseEntity<DetalleTorneoResponseDTO> listarTorneoPorEquipo(@PathVariable Long idTorneo, @PathVariable Long idEquipo){
         return ResponseEntity.ok(torneoService.listarTorneoPorEquipo(idTorneo,idEquipo));
+    }
+
+    @GetMapping("/puntos/{idTorneo}")
+    public ResponseEntity<List<DetalleTorneoResponseDTO>> listarTorneoPorPuntos(@PathVariable Long idTorneo){
+        return ResponseEntity.ok(torneoService.listarTorneoPorPuntos(idTorneo));
     }
 
     @PostMapping("/registrar")

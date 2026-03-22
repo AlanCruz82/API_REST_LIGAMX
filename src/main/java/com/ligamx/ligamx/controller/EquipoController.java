@@ -27,6 +27,11 @@ public class EquipoController {
         return ResponseEntity.ok(equipoService.listarEquipos());
     }
 
+    @GetMapping("/{idEquipo}")
+    public ResponseEntity<EquipoResponseDTO> listarEquipoPorId(@PathVariable Long idEquipo){
+        return ResponseEntity.ok(equipoService.listarEquipoPorId(idEquipo));
+    }
+
     @GetMapping("/ciudad/{ciudadEquipo}")
     public ResponseEntity<List<EquipoResponseDTO>> listarEquiposPorCiudad(@PathVariable String ciudadEquipo){
         return ResponseEntity.ok(equipoService.listarPorCiudad(ciudadEquipo));

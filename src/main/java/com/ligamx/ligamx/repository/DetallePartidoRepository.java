@@ -18,4 +18,7 @@ public interface DetallePartidoRepository extends JpaRepository<DetallePartido,L
 
     //Busqueda simple que vamos a usar para poder relacionar el detalle partido con el partido que pida el usuario
     List<DetallePartido> findByPartidoId(Long idPartido);
+
+    //Busqueda para validar relacion de jugador con un equipo (en la eliminacion de un equipo)
+    boolean existsByEquipoId(Long idEquipo);
 }

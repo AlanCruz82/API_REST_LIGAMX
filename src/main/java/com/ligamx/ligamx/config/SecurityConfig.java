@@ -23,6 +23,11 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -43,6 +48,7 @@ public class SecurityConfig {
                 //Desactivamos la deteccion de la vulnerabilidad CROSS-SITE-REQUEST-FORESTY ya que en nuestra rest no tenemos un formulario
                 //en caso de que exista la activamos
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 //Habilitamos la autenticacion basico con sus parametros por defecto
                 .httpBasic(Customizer.withDefaults())
                 //Evitamos generar un objeto de la sesion
@@ -59,7 +65,7 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.GET, "/api/v1/torneos/**").permitAll();
 
                     //Endpoints publicos de autenticacion
-                    http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll();
 
                     //Endpoints publicos que solo usuarios y el administrador van a poder usar
                     http.requestMatchers(HttpMethod.POST, "/api/v1/equipos/**").hasAnyRole( "USER", "ADMIN");
@@ -86,6 +92,21 @@ public class SecurityConfig {
                 //para poder establecer la autenticidad del usuario sin ser rechazado primero
                 .addFilterBefore(new JwtTokenValidator(this.jwtUtils), BasicAuthenticationFilter.class)
                 .build();
+    }
+
+    @Bean
+    //Configuracion de los cors para permitir peticiones del dominio del frontend
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(false);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean

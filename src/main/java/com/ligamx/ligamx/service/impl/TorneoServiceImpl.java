@@ -93,6 +93,12 @@ public class TorneoServiceImpl implements TorneoService {
     }
 
     @Override
+    public List<TorneoResponseDTO> listarTorneos() {
+        //Regresamos todos los torneos encontrandos en la base de datos en formato reponseDTO
+        return torneoRepository.findAll().stream().map(torneoMapper::toResponseDTO).toList();
+    }
+
+    @Override
     public TorneoResponseDTO listarTorneoPorNombreAnio(NombreTorneo nombre, Integer anio) {
         Torneo torneo = torneoRepository.findByNombreAndAnio(nombre,anio).orElseThrow(
                 () -> new ResourceNotFoundException("El torneo no fue encontrado por el nombre y año dado")
@@ -109,6 +115,11 @@ public class TorneoServiceImpl implements TorneoService {
         );
 
         return dtMapper.toResponseDTO(dt);
+    }
+
+    @Override
+    public List<DetalleTorneoResponseDTO> listarTorneoPorPuntos(Long idTorneo) {
+        return dtRepository.findByOrderPuntos(idTorneo).stream().map(dtMapper::toResponseDTO).toList();
     }
 
     @Override

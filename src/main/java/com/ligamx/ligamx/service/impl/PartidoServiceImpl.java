@@ -137,10 +137,79 @@ public class PartidoServiceImpl implements PartidoService {
 
     @Override
     public void eliminarPartido(Long idPartido) {
+        //Validamos si el equipo con el id recibido existe
         Partido partido = partidoRepository.findById(idPartido).orElseThrow(
                 () -> new ResourceNotFoundException("EL partido con id " + idPartido + " no existe")
         );
 
+        //Obtenemos el torneo relacionado con el partido que se quiere eliminar para poder eliminar las estadisticas
+        //del partido a cada equipo involucrado
+        Torneo torneo = torneoRepository.findById(partido.getTorneo().getId()).orElseThrow(
+                () -> new ResourceNotFoundException("El torneo del partido " + partido.getId() + " no se encontro")
+        );
+
+        //Obtenemos los detalles del partido que se quiere eliminar para conocer el marcador y las estadisticas que vamos a eliminar
+        List<DetallePartido> detallesPartido = partido.getDetallesPartido();
+
+        //Validamos el caso en el que el primer equipo del detalle le gano al quipo del segundo detalle
+        if(detallesPartido.get(0).getGoles() > detallesPartido.get(1).getGoles()){
+            //Eliminamos las estadisticas de ambos equipos
+
+            //Obtenmos las estadisticas del primer equipo
+            DetalleTorneo dtLocal = dtRepository.findByTorneoIdAndEquipoId(torneo.getId(),detallesPartido.get(0).getEquipo().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("El detalle del equipo no se encontro"));
+            //Eliminamos los puntos que se le sumaron al primer equipo por su victoria en el partido
+            dtLocal.setPuntos(dtLocal.getPuntos() - 3);
+            //Eliminamos la victoria del equipo de su estadistica de victorias
+            dtLocal.setVictorias(dtLocal.getVictorias() - 1);
+
+
+            //Obtenmos las estadisticas del segundo equipo
+            DetalleTorneo dtVisitante = dtRepository.findByTorneoIdAndEquipoId(torneo.getId(),detallesPartido.get(1).getEquipo().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("El detalle del equipo no se encontro"));
+            //Eliminamos la derrota del equipo de su estadistica de derrotas
+            dtVisitante.setDerrotas(dtVisitante.getDerrotas() - 1);
+
+            //Validamos el caso en el que el segundo equipo del detalle le gano al primero
+        } else if (detallesPartido.get(1).getGoles() > detallesPartido.get(0).getGoles()) {
+            //Eliminamos las estadisticas de ambos equipos
+
+            //Obtenemos las estadisticas del primer equipo
+            DetalleTorneo dtLocal = dtRepository.findByTorneoIdAndEquipoId(torneo.getId(), detallesPartido.get(0).getEquipo().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("El detalle del equipo no se encontro"));
+            //Eliminamos la derrota del equipo de su estadistica de derrotas
+            dtLocal.setVictorias(dtLocal.getDerrotas() - 1);
+
+            //Obtenmos las estadisticas del segundo equipo
+            DetalleTorneo dtVisitante = dtRepository.findByTorneoIdAndEquipoId(torneo.getId(), detallesPartido.get(1).getEquipo().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("El detalle del equipo no se encontro"));
+            //Eliminamos los puntos que se le sumaron al segundo equipo por su victoria en el partido
+            dtVisitante.setPuntos(dtVisitante.getPuntos() - 3);
+            //Eliminamos la victoria del equipo de su estadistica de victorias
+            dtVisitante.setDerrotas(dtVisitante.getVictorias() - 1);
+
+            //En caso contrario, el escenario del partido es un empate
+        }else{
+            //Eliminamos las estadisticas de ambos equipos
+
+            //Obtenemos las estadisticas del primer equipo
+            DetalleTorneo dtLocal = dtRepository.findByTorneoIdAndEquipoId(torneo.getId(), detallesPartido.get(0).getEquipo().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("El detalle del equipo no se encontro"));
+            //Eliminamos el punto obtenido por el equipo en el partido
+            dtLocal.setPuntos(dtLocal.getPuntos() - 1);
+            //Eliminamos el empate del equipo de su estadistica de empates
+            dtLocal.setEmpates(dtLocal.getEmpates() - 1);
+
+            //Obtenmos las estadisticas del segundo equipo
+            DetalleTorneo dtVisitante = dtRepository.findByTorneoIdAndEquipoId(torneo.getId(), detallesPartido.get(1).getEquipo().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("El detalle del equipo no se encontro"));
+            //Eliminamos el punto obtenido por el equipo en el partido
+            dtVisitante.setPuntos(dtVisitante.getPuntos() - 1);
+            //Eliminamos el empate del equipo de su estadistica de empates
+           dtVisitante.setEmpates(dtVisitante.getEmpates() - 1);
+        }
+
+        //Eliminamos el partido de la bd
         partidoRepository.deleteById(idPartido);
     }
 
